@@ -1,24 +1,40 @@
-import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+"use client";
+
+import { useState, FormEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Loader2, MessageSquare } from "lucide-react";
+
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, MessageSquare } from "lucide-react";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "./hooks/use-toast";
 
-const NewInterview = () => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+const cvList = [
+  { id: "1", name: "Junior Developer CV" },
+  { id: "2", name: "Senior Developer CV" },
+];
+
+export default function NewInterviewPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
+
   const [loading, setLoading] = useState(false);
-  
-  const cvList = [
-    { id: "1", name: "Junior Developer CV" },
-    { id: "2", name: "Senior Developer CV" },
-  ];
 
   const [formData, setFormData] = useState({
     cvId: searchParams.get("cvId") || "",
@@ -26,9 +42,9 @@ const NewInterview = () => {
     language: "hu",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.cvId || !formData.positionTitle.trim()) {
       toast({
         title: "Hiányzó adatok",
@@ -41,20 +57,22 @@ const NewInterview = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_N8N_BASE_URL}/webhook/interview-start`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            cvId: formData.cvId,
-            positionTitle: formData.positionTitle,
-            language: formData.language,
-          }),
-        }
-      );
+      const baseUrl = process.env.NEXT_PUBLIC_N8N_BASE_URL;
+      if (!baseUrl) {
+        throw new Error("NEXT_PUBLIC_N8N_BASE_URL nincs beállítva");
+      }
+
+      const response = await fetch(`${baseUrl}/webhook/interview-start`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cvId: formData.cvId,
+          positionTitle: formData.positionTitle,
+          language: formData.language,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Interjú indítása sikertelen");
@@ -67,11 +85,12 @@ const NewInterview = () => {
         description: `${data.questions?.length || 8} kérdés lett generálva a pozícióra.`,
       });
 
-      navigate(`/interview/${data.interviewId}`);
+      router.push(`/interview/${data.interviewId}`);
     } catch (error) {
       toast({
         title: "Hiba történt",
-        description: error instanceof Error ? error.message : "Próbáld újra később",
+        description:
+          error instanceof Error ? error.message : "Próbáld újra később",
         variant: "destructive",
       });
     } finally {
@@ -96,7 +115,8 @@ const NewInterview = () => {
               Interjú beállítások
             </CardTitle>
             <CardDescription>
-              Az AI a CV-d és a pozíció alapján személyre szabott kérdéseket generál
+              Az AI a CV-d és a pozíció alapján személyre szabott kérdéseket
+              generál
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -107,7 +127,7 @@ const NewInterview = () => {
                 <Select
                   value={formData.cvId}
                   onValueChange={(value) =>
-                    setFormData({ ...formData, cvId: value })
+                    setFormData((prev) => ({ ...prev, cvId: value }))
                   }
                   disabled={loading}
                 >
@@ -127,15 +147,13 @@ const NewInterview = () => {
                   <Button
                     variant="link"
                     className="p-0 h-auto"
-                    onClick={() => navigate("/cv/new")}
+                    onClick={() => router.push("/cv/new")}
                     type="button"
                   >
                     hozz létre egyet
                   </Button>
                 </p>
               </div>
-
-              {/* Position Title */}
               <div className="space-y-2">
                 <Label htmlFor="position">Pozíció megnevezése *</Label>
                 <Input
@@ -143,7 +161,10 @@ const NewInterview = () => {
                   placeholder="pl. Junior Frontend Developer"
                   value={formData.positionTitle}
                   onChange={(e) =>
-                    setFormData({ ...formData, positionTitle: e.target.value })
+                    setFormData((prev) => ({
+                      ...prev,
+                      positionTitle: e.target.value,
+                    }))
                   }
                   disabled={loading}
                 />
@@ -152,13 +173,12 @@ const NewInterview = () => {
                 </p>
               </div>
 
-              {/* Language */}
               <div className="space-y-2">
                 <Label htmlFor="language">Interjú nyelve *</Label>
                 <Select
                   value={formData.language}
                   onValueChange={(value) =>
-                    setFormData({ ...formData, language: value })
+                    setFormData((prev) => ({ ...prev, language: value }))
                   }
                   disabled={loading}
                 >
@@ -172,8 +192,7 @@ const NewInterview = () => {
                 </Select>
               </div>
 
-              {/* Info Box */}
-              <div className="p-4 bg-primary-light rounded-lg">
+              <div className="p-4 rounded-lg bg-primary/5">
                 <h4 className="font-semibold mb-2 text-primary">
                   Mit várhat tőled az interjú?
                 </h4>
@@ -185,18 +204,21 @@ const NewInterview = () => {
                 </ul>
               </div>
 
-              {/* Submit Button */}
               <div className="flex gap-3 pt-4">
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => navigate("/dashboard")}
+                  onClick={() => router.push("/dashboard")}
                   disabled={loading}
                   className="flex-1"
                 >
                   Mégse
                 </Button>
-                <Button type="submit" disabled={loading} className="flex-1 shadow-primary">
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 shadow-primary"
+                >
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -213,6 +235,4 @@ const NewInterview = () => {
       </div>
     </DashboardLayout>
   );
-};
-
-export default NewInterview;
+}
