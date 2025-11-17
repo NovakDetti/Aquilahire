@@ -15,7 +15,6 @@ const NewInterview = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   
-  // Mock CV list
   const cvList = [
     { id: "1", name: "Junior Developer CV" },
     { id: "2", name: "Senior Developer CV" },
