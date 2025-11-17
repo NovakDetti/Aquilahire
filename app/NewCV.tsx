@@ -1,18 +1,34 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+"use client";
+
+import { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { Loader2, FileText } from "lucide-react";
+
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, FileText } from "lucide-react";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "./hooks/use-toast";
 
-const NewCV = () => {
-  const navigate = useNavigate();
+export default function NewCVPage() {
+  const router = useRouter();
   const { toast } = useToast();
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -20,9 +36,9 @@ const NewCV = () => {
     textContent: "",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim() || !formData.textContent.trim()) {
       toast({
         title: "Hiányzó adatok",
@@ -35,20 +51,22 @@ const NewCV = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_N8N_BASE_URL}/webhook/cv-process`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: formData.name,
-            language: formData.language,
-            textContent: formData.textContent,
-          }),
-        }
-      );
+      const baseUrl = process.env.NEXT_PUBLIC_N8N_BASE_URL;
+      if (!baseUrl) {
+        throw new Error("NEXT_PUBLIC_N8N_BASE_URL nincs beállítva");
+      }
+
+      const response = await fetch(`${baseUrl}/webhook/cv-process`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          language: formData.language,
+          textContent: formData.textContent,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("CV feldolgozása sikertelen");
@@ -58,14 +76,17 @@ const NewCV = () => {
 
       toast({
         title: "Sikeres mentés! ✓",
-        description: `CV azonosító: ${data.cvId}. ${data.summary || "CV feldolgozva."}`,
+        description: `CV azonosító: ${data.cvId}. ${
+          data.summary || "CV feldolgozva."
+        }`,
       });
 
-      navigate("/dashboard");
+      router.push("/dashboard");
     } catch (error) {
       toast({
         title: "Hiba történt",
-        description: error instanceof Error ? error.message : "Próbáld újra később",
+        description:
+          error instanceof Error ? error.message : "Próbáld újra később",
         variant: "destructive",
       });
     } finally {
@@ -77,9 +98,12 @@ const NewCV = () => {
     <DashboardLayout>
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Új önéletrajz hozzáadása</h1>
+          <h1 className="text-3xl font-bold mb-2">
+            Új önéletrajz hozzáadása
+          </h1>
           <p className="text-muted-foreground">
-            Illeszd be az önéletrajzod szövegét, és a rendszer elemzi a szakmai háttered
+            Illeszd be az önéletrajzod szövegét, és a rendszer elemzi a szakmai
+            háttered
           </p>
         </div>
 
@@ -90,7 +114,8 @@ const NewCV = () => {
               CV adatok
             </CardTitle>
             <CardDescription>
-              Az AI feldolgozza a CV-det és személyre szabott interjúkérdéseket generál
+              Az AI feldolgozza a CV-det és személyre szabott interjúkérdéseket
+              generál
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -103,7 +128,7 @@ const NewCV = () => {
                   placeholder="pl. Junior Developer CV"
                   value={formData.name}
                   onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
+                    setFormData((prev) => ({ ...prev, name: e.target.value }))
                   }
                   disabled={loading}
                 />
@@ -115,7 +140,7 @@ const NewCV = () => {
                 <Select
                   value={formData.language}
                   onValueChange={(value) =>
-                    setFormData({ ...formData, language: value })
+                    setFormData((prev) => ({ ...prev, language: value }))
                   }
                   disabled={loading}
                 >
@@ -134,17 +159,22 @@ const NewCV = () => {
                 <Label htmlFor="content">CV tartalma *</Label>
                 <Textarea
                   id="content"
-                  placeholder="Illeszd be az önéletrajzod szövegét ide...&#10;&#10;Név: ...&#10;Végzettség: ...&#10;Tapasztalat: ...&#10;Készségek: ..."
+                  placeholder={
+                    "Illeszd be az önéletrajzod szövegét ide...\n\nNév: ...\nVégzettség: ...\nTapasztalat: ...\nKészségek: ..."
+                  }
                   value={formData.textContent}
                   onChange={(e) =>
-                    setFormData({ ...formData, textContent: e.target.value })
+                    setFormData((prev) => ({
+                      ...prev,
+                      textContent: e.target.value,
+                    }))
                   }
                   disabled={loading}
                   className="min-h-[300px] font-mono text-sm"
                 />
                 <p className="text-sm text-muted-foreground">
-                  Illeszd be az önéletrajzod szöveges verzióját. Az AI elemezni fogja a tapasztalatod, 
-                  készségeid és végzettséged alapján.
+                  Illeszd be az önéletrajzod szöveges verzióját. Az AI elemezni
+                  fogja a tapasztalatod, készségeid és végzettséged alapján.
                 </p>
               </div>
 
@@ -153,13 +183,17 @@ const NewCV = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => navigate("/dashboard")}
+                  onClick={() => router.push("/dashboard")}
                   disabled={loading}
                   className="flex-1"
                 >
                   Mégse
                 </Button>
-                <Button type="submit" disabled={loading} className="flex-1 shadow-primary">
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 shadow-primary"
+                >
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -176,6 +210,4 @@ const NewCV = () => {
       </div>
     </DashboardLayout>
   );
-};
-
-export default NewCV;
+}
