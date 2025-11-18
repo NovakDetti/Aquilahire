@@ -1,5 +1,3 @@
-"use client"
-
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,16 +11,8 @@ import cvUpload from "@/assets/infographic-cv-upload.png";
 import positionSelect from "@/assets/infographic-position.png";
 import aiQuestions from "@/assets/infographic-ai-questions.png";
 import reportAnalytics from "@/assets/infographic-report.png";
-import candidateChar from "@/assets/character-candidate.png";
-import hrChar from "@/assets/character-hr.png";
-import juniorChar from "@/assets/character-junior.png";
 
 export default function Home() {
-
-    const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <div className="min-h-screen overflow-hidden">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b">
@@ -81,10 +71,12 @@ export default function Home() {
                 <Button 
                   size="lg" 
                   variant="outline"
-                  onClick={() => scrollToSection("how-it-works")}
                   className="text-lg h-14 px-8"
+                  asChild
                 >
-                  Nézd meg, hogyan működik
+                  <Link href="#how-it-works">
+                    Nézd meg, hogyan működik
+                  </Link>
                 </Button>
               </div>
               <div className="flex items-center gap-8 pt-4">
@@ -261,20 +253,14 @@ export default function Home() {
             <section className="py-24 px-4 bg-muted/10">
         <div className="container mx-auto max-w-7xl">
           <div className="grid gap-16 lg:grid-cols-2 items-center">
-            {/* Telefon / app mockup */}
             <div className="relative">
               <div className="absolute -left-24 -top-24 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
               <div className="absolute -right-10 bottom-0 w-64 h-64 bg-cyan/10 rounded-full blur-3xl" />
-
               <div className="relative mx-auto max-w-xs">
-                {/* Telefon keret */}
                 <div className="rounded-[2.2rem] border border-border bg-gradient-to-br from-slate-50 to-slate-100 shadow-2xl px-3 pb-4 pt-5">
-                  {/* Notch */}
                   <div className="flex justify-center mb-4">
                     <div className="h-6 w-32 rounded-full bg-black/90" />
                   </div>
-
-                  {/* Képernyő tartalom */}
                   <div className="rounded-3xl bg-white border border-muted shadow-inner flex flex-col justify-between h-[420px] overflow-hidden">
                     <div className="p-6 flex-1 flex flex-col items-center justify-center gap-4 text-center">
                       <span className="text-sm font-semibold text-muted-foreground tracking-wide uppercase">
@@ -285,8 +271,6 @@ export default function Home() {
                         legfontosabb felelősségeidről.”
                       </p>
                     </div>
-
-                    {/* Alul vezérlők */}
                     <div className="px-5 py-4 border-t border-muted flex items-center justify-between text-xs text-muted-foreground">
                       <div className="flex items-center gap-2">
                         <div className="h-8 w-8 rounded-full border border-muted flex items-center justify-center">
@@ -302,8 +286,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
-            {/* Szöveges rész – funkciók + előnyök */}
             <div className="space-y-8">
               <div className="space-y-3">
                 <p className="text-sm font-semibold tracking-wide text-primary uppercase">
@@ -320,7 +302,6 @@ export default function Home() {
               </div>
 
               <div className="grid gap-10 md:grid-cols-2">
-                {/* Funkciók */}
                 <div className="space-y-4">
                   <h3 className="text-xl font-semibold">Fő funkciók</h3>
                   <ul className="space-y-3 text-sm text-muted-foreground">
@@ -338,8 +319,6 @@ export default function Home() {
                     ))}
                   </ul>
                 </div>
-
-                {/* Előnyök */}
                 <div className="space-y-4">
                   <h3 className="text-xl font-semibold">Előnyök neked</h3>
                   <ul className="space-y-3 text-sm text-muted-foreground">
@@ -473,7 +452,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ */}
       <section className="py-24 px-4">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center space-y-4 mb-16">
