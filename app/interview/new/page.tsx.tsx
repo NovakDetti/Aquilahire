@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "./hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 
 const cvList = [
   { id: "1", name: "Junior Developer CV" },
