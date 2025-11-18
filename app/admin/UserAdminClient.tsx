@@ -431,7 +431,6 @@ export default function UserAdminClient({
               </Button>
             </div>
           </div>
-
           <div className="space-y-3 rounded-xl border border-destructive/40 bg-destructive/5 p-4">
             <p className="text-sm font-semibold text-destructive flex items-center gap-2">
               <Trash2 className="h-4 w-4" />
