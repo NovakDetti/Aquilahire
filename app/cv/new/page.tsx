@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "./hooks/use-toast";
+import { useToast } from "@/app/hooks/use-toast";
 
 export default function NewCVPage() {
   const router = useRouter();
