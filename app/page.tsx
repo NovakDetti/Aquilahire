@@ -117,79 +117,95 @@ export default function Home() {
       <section id="how-it-works" className="py-24 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center space-y-4 mb-20">
-            <h2 className="text-5xl font-bold text-gradient-primary">Hogyan működik?</h2>
+            <h2 className="text-5xl font-bold text-gradient-primary pb-8">Hogyan működik?</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Négy egyszerű lépésben az első AI interjúdig
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                image: cvUpload,
-                title: "CV feltöltése",
-                description: "Illeszd be az önéletrajzod szövegét, és a rendszer elemzi a szakmai háttered",
-                step: 1,
-                gradient: "from-primary to-blue",
-              },
-              {
-                image: positionSelect,
-                title: "Pozíció kiválasztása",
-                description: "Add meg, milyen pozícióra készülsz, és válaszd ki az interjú nyelvét",
-                step: 2,
-                gradient: "from-blue to-cyan",
-              },
-              {
-                image: aiQuestions,
-                title: "AI által vezetett interjú",
-                description: "Válaszolj a személyre szabott kérdésekre, mintha egy valós interjún lennél",
-                step: 3,
-                gradient: "from-cyan to-mint",
-              },
-              {
-                image: reportAnalytics,
-                title: "Részletes riport",
-                description: "Kapsz pontszámot, visszajelzést és konkrét fejlesztési javaslatokat",
-                step: 4,
-                gradient: "from-mint to-primary",
-              },
-            ].map((item) => (
-              <Card 
-                key={item.step} 
-                className="relative overflow-hidden hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/50 group"
-              >
-                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${item.gradient}`} />
-                <CardHeader className="text-center pt-8">
-                  <div className="relative mx-auto mb-6">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-20 blur-2xl rounded-full group-hover:opacity-30 transition-opacity`} />
-                    <div className="relative h-32 w-32 mx-auto bg-gradient-card rounded-2xl p-4 shadow-md">
-                      <Image 
-                        src={item.image} 
-                        alt={item.title}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                    <div className={`absolute -bottom-3 -right-3 h-12 w-12 rounded-full bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white font-bold text-xl shadow-lg`}>
-                      {item.step}
-                    </div>
+          {[
+            {
+              image: cvUpload,
+              title: "CV feltöltése",
+              description: "Illeszd be az önéletrajzod szövegét, és a rendszer elemzi a szakmai háttered",
+              step: 1,
+              gradient: "from-primary to-blue",
+            },
+            {
+              image: positionSelect,
+              title: "Pozíció kiválasztása",
+              description: "Add meg, milyen pozícióra készülsz, és válaszd ki az interjú nyelvét",
+              step: 2,
+              gradient: "from-blue to-cyan",
+            },
+            {
+              image: aiQuestions,
+              title: "AI által vezetett interjú",
+              description: "Válaszolj a személyre szabott kérdésekre, mintha egy valós interjún lennél",
+              step: 3,
+              gradient: "from-cyan to-mint",
+            },
+            {
+              image: reportAnalytics,
+              title: "Részletes riport",
+              description: "Kapsz pontszámot, visszajelzést és konkrét fejlesztési javaslatokat",
+              step: 4,
+              gradient: "from-mint to-primary",
+            },
+          ].map((item) => (
+            <Card
+              key={item.step}
+              className="relative overflow-hidden hover:shadow-lg transition-all duration-300 border border-neutral-200 hover:border-primary/40 hover:shadow-lg group"
+            >
+              <CardHeader className="text-center pt-8">
+                <div className="relative mx-auto mb-6">
+                  <div
+                    className={`
+                      absolute inset-0
+                      bg-gradient-to-br ${item.gradient}
+                      opacity-45
+                      blur-2xl rounded-full
+                      group-hover:opacity-25
+                      transition-opacity
+                    `}
+                  />
+                  <div className="relative h-32 w-32 mx-auto bg-gradient-card rounded-2xl p-4 shadow-md">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-contain"
+                    />
                   </div>
-                  <CardTitle className="text-xl mb-3">{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center pb-8">
+                  <div
+                    className={`
+                      absolute -bottom-3 -right-3
+                      h-12 w-12 rounded-full
+                      bg-gradient-to-br ${item.gradient}
+                      flex items-center justify-center
+                      text-white font-bold text-xl shadow-lg
+                    `}
+                  >
+                    {item.step}
+                  </div>
+                </div>
+                <CardTitle className="text-xl mb-3">{item.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center pb-8">
                   <CardDescription className="text-base leading-relaxed">
-                    {item.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+                  {item.description}
+                </CardDescription>
+              </CardContent>
+            </Card>
+          ))}
+        </div>  
+</div>
       </section>
 
       <section className="py-24 px-4 bg-muted/30">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center space-y-4 mb-20">
-            <h2 className="text-5xl font-bold text-gradient-primary">Miért válaszd a MockHire-t?</h2>
+            <h2 className="text-5xl font-bold text-gradient-primary">Miért válaszd a AquilaHire-t?</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Professziónális felkészülés az állásinterjúra AI technológiával
             </p>
@@ -242,59 +258,124 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 px-4">
+            <section className="py-24 px-4 bg-muted/10">
         <div className="container mx-auto max-w-7xl">
-          <div className="text-center space-y-4 mb-20">
-            <h2 className="text-5xl font-bold text-gradient-primary">Kinek ajánljuk?</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Akár jelölt, HR szakember vagy junior fejlesztő vagy, mi segítünk
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                image: candidateChar,
-                title: "Álláskeresőknek",
-                description: "Gyakorold az interjúkat kockázat nélkül. Növeld az önbizalmad és javítsd a válaszaid minőségét valós visszajelzéssel.",
-                gradient: "from-primary to-blue",
-              },
-              {
-                image: hrChar,
-                title: "HR szakembereknek",
-                description: "Segítsd a jelölteket a felkészülésben. Értékeld az interjúkészségeket és adj visszajelzést még az éles interjú előtt.",
-                gradient: "from-blue to-cyan",
-              },
-              {
-                image: juniorChar,
-                title: "Junior fejlesztőknek",
-                description: "Az első munkahelyed keresése stresszes? Gyakorold az interjúkat, tanulj a hibáidból és légy készen a nagy lehetőségre.",
-                gradient: "from-cyan to-mint",
-              },
-            ].map((char, index) => (
-              <Card 
-                key={index} 
-                className="text-center hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/50 overflow-hidden group"
-              >
-                <div className="relative h-64 overflow-hidden bg-gradient-card">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${char.gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
-                  <Image 
-                    src={char.image} 
-                    alt={char.title}
-                    className="relative z-10 w-full h-full object-contain p-8 group-hover:scale-110 transition-transform duration-300"
-                  />
+          <div className="grid gap-16 lg:grid-cols-2 items-center">
+            {/* Telefon / app mockup */}
+            <div className="relative">
+              <div className="absolute -left-24 -top-24 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+              <div className="absolute -right-10 bottom-0 w-64 h-64 bg-cyan/10 rounded-full blur-3xl" />
+
+              <div className="relative mx-auto max-w-xs">
+                {/* Telefon keret */}
+                <div className="rounded-[2.2rem] border border-border bg-gradient-to-br from-slate-50 to-slate-100 shadow-2xl px-3 pb-4 pt-5">
+                  {/* Notch */}
+                  <div className="flex justify-center mb-4">
+                    <div className="h-6 w-32 rounded-full bg-black/90" />
+                  </div>
+
+                  {/* Képernyő tartalom */}
+                  <div className="rounded-3xl bg-white border border-muted shadow-inner flex flex-col justify-between h-[420px] overflow-hidden">
+                    <div className="p-6 flex-1 flex flex-col items-center justify-center gap-4 text-center">
+                      <span className="text-sm font-semibold text-muted-foreground tracking-wide uppercase">
+                        AquilaHire AI
+                      </span>
+                      <p className="text-lg font-medium text-foreground leading-relaxed">
+                        „Mesélj a jelenlegi pozíciódról és a
+                        legfontosabb felelősségeidről.”
+                      </p>
+                    </div>
+
+                    {/* Alul vezérlők */}
+                    <div className="px-5 py-4 border-t border-muted flex items-center justify-between text-xs text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-full border border-muted flex items-center justify-center">
+                          ▌▌
+                        </div>
+                        <span>01:10</span>
+                      </div>
+                      <div className="h-8 px-4 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold shadow-primary">
+                        Következő kérdés
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <CardHeader>
-                  <CardTitle className="text-2xl mb-3">{char.title}</CardTitle>
-                  <CardDescription className="text-base leading-relaxed">
-                    {char.description}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
+              </div>
+            </div>
+
+            {/* Szöveges rész – funkciók + előnyök */}
+            <div className="space-y-8">
+              <div className="space-y-3">
+                <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+                  AI interjúgyakorlás
+                </p>
+                <h2 className="text-4xl md:text-5xl font-bold text-gradient-primary">
+                  Mi van az AI interjú-szimulátorban?
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
+                  Kényelmesen gyakorolhatod a tipikus és iparág-specifikus
+                  interjúkérdéseket. Az AquilaHire AI meghallgat,
+                  elemez, és azonnali, személyre szabott visszajelzést ad.
+                </p>
+              </div>
+
+              <div className="grid gap-10 md:grid-cols-2">
+                {/* Funkciók */}
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold">Fő funkciók</h3>
+                  <ul className="space-y-3 text-sm text-muted-foreground">
+                    {[
+                      "Pozíció- és iparág-specifikus HR-stílusú interjúkérdések",
+                      "Valós idejű visszajelzés a válaszaid tartalmára és felépítésére",
+                      "Magabiztosság- és kommunikációs szint elemzése",
+                      "Személyre szabott fejlesztési javaslatok minden kérdés után",
+                      "Interjú riportok és fejlődéskövetés egy helyen",
+                    ].map((item) => (
+                      <li key={item} className="flex items-start gap-3">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 text-primary flex-shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Előnyök */}
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold">Előnyök neked</h3>
+                  <ul className="space-y-3 text-sm text-muted-foreground">
+                    {[
+                      "Stresszmentes gyakorlás – tét nélkül, bármikor, bárhonnan",
+                      "Azonnali, őszinte feedback, amit egy élő interjún nem kapsz meg",
+                      "Fejlesztheted a magyar és (később) az angol interjúkészségeidet is",
+                      "Rugalmas – a saját időbeosztásodhoz igazodik",
+                      "Valós példákon alapuló felkészülés az éles interjúkra",
+                    ].map((item) => (
+                      <li key={item} className="flex items-start gap-3">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 text-primary flex-shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  size="lg"
+                  className="shadow-primary text-lg h-12 px-8"
+                  asChild
+                >
+                  <Link href="/dashboard">
+                    Próbáld ki az AI interjút
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
 
       <section className="py-24 px-4 bg-muted/30">
         <div className="container mx-auto max-w-7xl">
@@ -398,7 +479,7 @@ export default function Home() {
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-5xl font-bold text-gradient-primary">Gyakori kérdések</h2>
             <p className="text-xl text-muted-foreground">
-              Minden, amit tudnod kell a MockHire-ról
+              Minden, amit tudnod kell a AquilaHire-ról
             </p>
           </div>
           
@@ -474,7 +555,7 @@ export default function Home() {
                 <div className="h-10 w-10 rounded-xl bg-gradient-primary flex items-center justify-center">
                   <MessageSquare className="h-6 w-6 text-white" />
                 </div>
-                <span className="font-bold text-2xl text-gradient-primary">MockHire</span>
+                <span className="font-bold text-2xl text-gradient-primary">AquilaHire</span>
               </div>
               <p className="text-muted-foreground leading-relaxed">
                 AI-alapú állásinterjú szimulátor, amely segít felkészülni a következő nagy lehetőségre.
@@ -511,7 +592,7 @@ export default function Home() {
           
           <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2024 MockHire. Minden jog fenntartva.
+              © 2025 AquilaHire. Minden jog fenntartva.
             </p>
             <div className="flex gap-6 text-muted-foreground">
               <Users className="h-5 w-5 hover:text-primary cursor-pointer transition-colors" />

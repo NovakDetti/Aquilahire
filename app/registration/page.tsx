@@ -138,14 +138,14 @@ const Register = () => {
             <MessageSquare className="h-6 w-6 text-white" />
           </div>
           <span className="font-bold text-2xl text-gradient-primary">
-            MockHire
+            AquilaHire
           </span>
         </div>
 
         <Card className="shadow-lg border-border/50 bg-card/95 backdrop-blur">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">
-              Hozz létre MockHire fiókot
+              Hozz létre AquilaHire fiókot
             </CardTitle>
             <CardDescription className="text-center">
               Gyakorold az állásinterjúkat AI segítségével, magyar nyelven
@@ -329,7 +329,7 @@ const Register = () => {
         </Card>
 
         <p className="text-center text-sm text-muted-foreground mt-4 max-w-sm mx-auto">
-          A MockHire egy AI alapú gyakorló platform. Az adataid biztonságosan
+          Az AquilaHire egy AI alapú gyakorló platform. Az adataid biztonságosan
           vannak tárolva.
         </p>
       </div>

@@ -25,8 +25,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { title: "Interjúk", icon: MessagesSquare, href: "/interview" },
-  { title: "Admin", icon: Settings }, // csak label, nincs route
-];
+  { title: "Admin", icon: Settings, href: "/admin"}]
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
@@ -46,7 +45,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           {/* Logo */}
           <div className="h-16 border-b flex items-center px-6 gap-2">
             <Logo className="h-6 w-6 text-primary" />
-            <span className="font-bold text-xl">MockHire</span>
+            <span className="font-bold text-xl">AquilaHire</span>
           </div>
 
           {/* Navigation */}
@@ -111,7 +110,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <header className="h-16 border-b bg-card flex items-center justify-between px-6">
           <div className="flex items-center gap-4 md:hidden">
             <Logo className="h-6 w-6 text-primary" />
-            <span className="font-bold text-xl">MockHire</span>
+            <span className="font-bold text-xl">AquilaHire</span>
           </div>
           <div className="ml-auto">
             <Button variant="outline" size="sm" asChild>

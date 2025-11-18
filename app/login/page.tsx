@@ -97,21 +97,20 @@ const Login = () => {
             <MessageSquare className="h-6 w-6 text-white" />
           </div>
           <span className="font-bold text-2xl text-gradient-primary">
-            MockHire
+            AquilaHire
           </span>
         </div>
 
         <Card className="shadow-lg border-border/50 bg-card/95 backdrop-blur">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">
-              Bejelentkezés MockHire fiókba
+              Bejelentkezés AquilaHire fiókba
             </CardTitle>
             <CardDescription className="text-center">
               Lépj be az AI alapú interjú gyakorló felületedre
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Google Button */}
             <Button
               type="button"
               variant="outline"
