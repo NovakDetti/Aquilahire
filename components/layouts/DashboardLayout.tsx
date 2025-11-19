@@ -3,11 +3,21 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import DashboardLayoutClient from "./DashboardLayoutClient";
 
-interface DashboardLayoutProps {
-  children: ReactNode;
+interface SidebarUser {
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
 }
 
-export default async function DashboardLayout({ children }: DashboardLayoutProps) {
+interface DashboardLayoutProps {
+  children: ReactNode;
+  userOverride?: SidebarUser; 
+}
+
+export default async function DashboardLayout({
+  children,
+  userOverride,
+}: DashboardLayoutProps) {
   const session = await getServerSession(authOptions);
 
   return (
@@ -18,7 +28,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
         </div>
       }
     >
-      <DashboardLayoutClient session={session}>
+      <DashboardLayoutClient session={session} userOverride={userOverride}>
         {children}
       </DashboardLayoutClient>
     </Suspense>

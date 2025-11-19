@@ -45,7 +45,11 @@ export default async function SettingsPage() {
       : "";
 
   return (
-    <DashboardLayout>
+    <DashboardLayout userOverride={{
+        name: userRow?.name ?? email,
+        email,
+        image: userRow?.image ?? null,
+      }}>
         <AdminClient
         user={{
             name: userRow.name ?? email,

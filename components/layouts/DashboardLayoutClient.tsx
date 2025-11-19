@@ -13,9 +13,16 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Session } from "next-auth";
 
+interface SidebarUser {
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
+
 interface DashboardLayoutClientProps {
   children: ReactNode;
   session?: Session | null;
+  userOverride?: SidebarUser;
 }
 
 type NavItem = {
@@ -33,9 +40,12 @@ const navItems: NavItem[] = [
 export default function DashboardLayoutClient({
   children,
   session,
+  userOverride,
 }: DashboardLayoutClientProps) {
   const pathname = usePathname();
-  const user = session?.user;
+
+  const user =
+    userOverride ?? session?.user ?? { name: "Ismeretlen felhasználó", email: "nincs email" };
 
   const isActive = (href: string) =>
     href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href);
@@ -74,11 +84,11 @@ export default function DashboardLayoutClient({
 
           <div className="p-4 border-t">
             <div className="flex items-center gap-3 px-3 py-2">
-              {user?.image ? (
+              {user.image ? (
                 <img
                   src={user.image}
                   alt="Avatar"
-                  className="h-8 w-8 rounded-full"
+                  className="h-8 w-8 rounded-full object-cover"
                 />
               ) : (
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
