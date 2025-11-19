@@ -1,3 +1,5 @@
+export type Plan = "Starter" | "Pro" | "Premium";
+
 export type CvItem = {
   id: string;
   name: string;
@@ -34,9 +36,33 @@ export type UserStats = {
 };
 
 export type UserAdminData = {
-  user: UserInfo;
-  settings: UserSettings;
-  stats: UserStats;
-  cvs: CvItem[];
-  interviews: InterviewItem[];
+  user: {
+    name: string;
+    email: string;
+    memberSince: string;
+  };
+  settings: {
+    plan: Plan;
+    emailNotif: boolean;
+    newsletter: boolean;
+  };
+  stats: {
+    remainingThisMonth: number;
+    totalInterviews: number;
+    avgScore: number;
+  };
+  cvs: {
+    id: string;
+    name: string;
+    language: "hu" | "en";
+    createdAt: string;
+  }[];
+  interviews: {
+    id: string;
+    cvName: string;
+    role: string;
+    status: "scheduled" | "finished" | "draft";
+    date: string;
+    score?: number | null;
+  }[];
 };

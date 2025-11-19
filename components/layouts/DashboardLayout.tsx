@@ -9,6 +9,7 @@ import {
   Settings,
   MessageSquare as Logo,
   MessagesSquare,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -25,7 +26,8 @@ type NavItem = {
 const navItems: NavItem[] = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { title: "Interjúk", icon: MessagesSquare, href: "/interview" },
-  { title: "Admin", icon: Settings, href: "/admin"}]
+  { title: "Admin", icon: Settings, href: "/admin"},
+  { title: "Beallitasok", icon: User, href: "/settings" },]
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
