@@ -35,7 +35,7 @@ type Props = {
   };
 };
 
-export default function SettingsClient({ user, settings }: Props) {
+export default function AdminClient({ user, settings }: Props) {
   const { toast } = useToast();
 
   const [plan, setPlan] = useState<Plan>(settings.plan);

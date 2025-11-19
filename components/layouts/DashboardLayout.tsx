@@ -26,8 +26,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { title: "Interjúk", icon: MessagesSquare, href: "/interview" },
-  { title: "Admin", icon: Settings, href: "/admin"},
-  { title: "Beallitasok", icon: User, href: "/settings" },]
+  { title: "Admin", icon: User, href: "/admin" },]
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
