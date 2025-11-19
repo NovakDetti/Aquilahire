@@ -9,7 +9,7 @@ import {
 } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { Plan, UserAdminData } from "../types/dashboard";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayoutClient";
 import AdminClient from "../admin/AdminClient";
 
 function formatDate(date: Date | null | undefined) {

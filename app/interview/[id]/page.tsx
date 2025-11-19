@@ -22,7 +22,7 @@ import {
   ArrowRight,
   Link as LinkIcon,
 } from "lucide-react";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayoutClient";
 import ScoreBadge from "@/components/ScoreBadge";
 import ReportSection from "@/components/ReportSection";
 

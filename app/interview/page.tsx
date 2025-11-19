@@ -12,7 +12,7 @@ import {
   AlertCircle,
   Lightbulb,
 } from "lucide-react";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayoutClient";
 import InterviewQuestionCard from "@/components/InterviewQuestionCard";
 import ScoreBadge from "@/components/ScoreBadge";
 import { useToast } from "../hooks/use-toast";
