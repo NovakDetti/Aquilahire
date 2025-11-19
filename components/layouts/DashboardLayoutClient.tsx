@@ -11,11 +11,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Session } from "next-auth";
+import type { Session } from "next-auth";
 
 interface DashboardLayoutClientProps {
   children: ReactNode;
-  session: Session | null; 
+  session?: Session | null;
 }
 
 type NavItem = {
@@ -77,13 +77,13 @@ export default function DashboardLayoutClient({
               {user?.image ? (
                 <img
                   src={user.image}
-                  alt="avatar"
+                  alt="Avatar"
                   className="h-8 w-8 rounded-full"
                 />
               ) : (
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                   <span className="text-sm font-semibold text-primary">
-                    {user?.name?.[0] ?? ""}
+                    {user?.name?.[0] ?? "U"}
                   </span>
                 </div>
               )}
@@ -93,7 +93,7 @@ export default function DashboardLayoutClient({
                   {user?.name ?? "Ismeretlen felhasználó"}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
-                  {user?.email ?? "ismeretlen@email.com"}
+                  {user?.email ?? "nincs email"}
                 </p>
               </div>
             </div>

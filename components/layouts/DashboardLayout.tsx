@@ -1,7 +1,7 @@
 import { ReactNode, Suspense } from "react";
-import DashboardLayoutClient from "./DashboardLayoutClient";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import DashboardLayoutClient from "./DashboardLayoutClient";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -18,7 +18,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
         </div>
       }
     >
-      <DashboardLayoutClient session={session} >
+      <DashboardLayoutClient session={session}>
         {children}
       </DashboardLayoutClient>
     </Suspense>
