@@ -11,7 +11,6 @@ import {
 } from "@/lib/schema";
 import { eq, desc } from "drizzle-orm";
 import { Plan, UserAdminData } from "../types/dashboard";
-import UserAdminClient from "../admin/UserAdminClient";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const PLAN_LIMITS: Record<Plan, number> = {
