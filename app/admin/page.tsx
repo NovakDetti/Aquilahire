@@ -8,7 +8,6 @@ import { users, userSettings } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import SettingsClient from "./AdminClient";
 import AdminClient from "./AdminClient";
 
 export default async function SettingsPage() {
