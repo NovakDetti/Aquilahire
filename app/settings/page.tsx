@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { users, userSettings } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import SettingsClient from "./SettingsClient";
 
 export default async function SettingsPage() {
@@ -44,17 +45,19 @@ export default async function SettingsPage() {
       : "";
 
   return (
-    <SettingsClient
-      user={{
-        name: userRow.name ?? email,
-        email,
-        memberSince: formatDate(userRow.createdAt),
-      }}
-      settings={{
-        plan,
-        emailNotif,
-        newsletter,
-      }}
-    />
+    <DashboardLayout>
+        <SettingsClient
+        user={{
+            name: userRow.name ?? email,
+            email,
+            memberSince: formatDate(userRow.createdAt),
+        }}
+        settings={{
+            plan,
+            emailNotif,
+            newsletter,
+        }}
+        />
+    </DashboardLayout>
   );
 }

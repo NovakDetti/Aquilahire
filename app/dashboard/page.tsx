@@ -12,6 +12,7 @@ import {
 import { eq, desc } from "drizzle-orm";
 import { Plan, UserAdminData } from "../types/dashboard";
 import UserAdminClient from "../admin/UserAdminClient";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const PLAN_LIMITS: Record<Plan, number> = {
   Starter: 3,
@@ -137,12 +138,14 @@ export default async function DashboardPage() {
   };
 
   return (
-    <UserAdminClient
-      user={user}
-      settings={settings}
-      stats={stats}
-      cvs={cvs}
-      interviews={interviews}
-    />
+    <DashboardLayout>
+      <UserAdminClient
+        user={user}
+        settings={settings}
+        stats={stats}
+        cvs={cvs}
+        interviews={interviews}
+      />
+    </DashboardLayout>
   );
 }
