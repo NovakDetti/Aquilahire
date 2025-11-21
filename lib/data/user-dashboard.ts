@@ -15,7 +15,7 @@ export async function getUserDashboardData(userId: string): Promise<UserAdminDat
   }
 
   const user: UserInfo = {
-    id: userRow.id,
+    id: userRow.id!,
     name: userRow.name ?? "Névtelen felhasználó",
     email: userRow.email,
     memberSince: userRow.createdAt.toISOString().slice(0, 10),
