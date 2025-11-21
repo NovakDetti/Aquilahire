@@ -19,7 +19,7 @@ export async function DELETE() {
   const email = session.user.email;
 
   const userRow = await db.query.users.findFirst({
-    where: eq(users.email, email),
+    where: eq(users.email, email!),
   });
 
   if (!userRow) {
@@ -27,15 +27,15 @@ export async function DELETE() {
   }
 
   await db.transaction(async (tx) => {
-    await tx.delete(cvs).where(eq(cvs.userId, userRow.id));
+    await tx.delete(cvs).where(eq(cvs.userId, userRow.id!));
     await tx
       .delete(interviews)
-      .where(eq(interviews.userId, userRow.id));
+      .where(eq(interviews.userId, userRow.id!));
     await tx
       .delete(userSettings)
-      .where(eq(userSettings.userId, userRow.id));
+      .where(eq(userSettings.userId, userRow.id!));
 
-    await tx.delete(users).where(eq(users.id, userRow.id));
+    await tx.delete(users).where(eq(users.id, userRow.id!));
   });
 
   return NextResponse.json({ ok: true });

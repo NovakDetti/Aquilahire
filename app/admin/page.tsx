@@ -1,4 +1,3 @@
-// app/settings/page.tsx
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -20,7 +19,7 @@ export default async function SettingsPage() {
   const email = session.user.email!;
 
   const userRow = await db.query.users.findFirst({
-    where: eq(users.email, email),
+    where: eq(users.email, email!),
   });
 
   if (!userRow) {

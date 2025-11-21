@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
   const email = session.user.email!;
   let userRow = await db.query.users.findFirst({
-    where: eq(users.email, email),
+    where: eq(users.email, email!),
   });
 
   if (!userRow) {
