@@ -28,7 +28,7 @@ export default async function SettingsPage() {
   }
 
   const settingsRow = await db.query.userSettings.findFirst({
-    where: eq(userSettings.userId, userRow.id),
+    where: eq(userSettings.userId, userRow.id!),
   });
 
   const plan = (settingsRow?.plan as "Starter" | "Pro" | "Premium") ?? "Starter";
