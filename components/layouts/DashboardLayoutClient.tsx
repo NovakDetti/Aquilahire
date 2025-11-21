@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Session } from "next-auth";
+import Image from "next/image";
 
 interface SidebarUser {
   name?: string | null;
@@ -43,6 +44,8 @@ export default function DashboardLayoutClient({
   userOverride,
 }: DashboardLayoutClientProps) {
   const pathname = usePathname();
+
+  console.log(userOverride, session)
 
   const user =
     userOverride ?? session?.user ?? { name: "Ismeretlen felhasználó", email: "nincs email" };
@@ -84,19 +87,22 @@ export default function DashboardLayoutClient({
 
           <div className="p-4 border-t">
             <div className="flex items-center gap-3 px-3 py-2">
-              {user.image ? (
-                <img
-                  src={user.image}
-                  alt="Avatar"
-                  className="h-8 w-8 rounded-full object-cover"
-                />
-              ) : (
-                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="text-sm font-semibold text-primary">
-                    {user?.name?.[0] ?? "U"}
-                  </span>
-                </div>
-              )}
+              <div className="w-10 h-10 relative rounded-full overflow-hidden shadow-md">
+                {user.image ? (
+                  <Image
+                    src={user.image}
+                    alt={user.name || "Profilkép"}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="text-sm font-semibold text-primary">
+                      {user?.name?.[0] ?? "U"}
+                    </span>
+                  </div>
+                )}
+              </div>
 
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">
@@ -108,6 +114,7 @@ export default function DashboardLayoutClient({
               </div>
             </div>
           </div>
+
         </div>
       </aside>
 

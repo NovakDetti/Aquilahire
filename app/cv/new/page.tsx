@@ -33,66 +33,61 @@ export default function NewCVPage() {
   const [formData, setFormData] = useState({
     name: "",
     language: "hu",
-    textContent: "",
+    text_content: "",
   });
 
+
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!formData.name.trim() || !formData.textContent.trim()) {
-      toast({
-        title: "Hiányzó adatok",
-        description: "Kérlek, töltsd ki az összes mezőt!",
-        variant: "destructive",
-      });
-      return;
+  if (!formData.name.trim() || !formData.text_content.trim()) {
+    toast({
+      title: "Hiányzó adatok",
+      description: "Kérlek, töltsd ki az összes mezőt!",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const response = await fetch("/api/cv/new", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        language: formData.language,
+        text_content: formData.text_content,
+      }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      throw new Error(data?.error || "CV mentése sikertelen");
     }
 
-    setLoading(true);
+    const data = await response.json();
 
-    try {
-      const baseUrl = process.env.NEXT_PUBLIC_N8N_BASE_URL;
-      if (!baseUrl) {
-        throw new Error("NEXT_PUBLIC_N8N_BASE_URL nincs beállítva");
-      }
+    toast({
+      title: "Sikeres mentés! ✓",
+      description: `CV azonosító: ${data.cvId}`,
+    });
 
-      const response = await fetch(`${baseUrl}/webhook/cv-process`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          language: formData.language,
-          textContent: formData.textContent,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("CV feldolgozása sikertelen");
-      }
-
-      const data = await response.json();
-
-      toast({
-        title: "Sikeres mentés! ✓",
-        description: `CV azonosító: ${data.cvId}. ${
-          data.summary || "CV feldolgozva."
-        }`,
-      });
-
-      router.push("/dashboard");
-    } catch (error) {
-      toast({
-        title: "Hiba történt",
-        description:
-          error instanceof Error ? error.message : "Próbáld újra később",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+    router.push("/dashboard");
+  } catch (error) {
+    toast({
+      title: "Hiba történt",
+      description:
+        error instanceof Error ? error.message : "Próbáld újra később",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <DashboardLayout>
@@ -147,7 +142,7 @@ export default function NewCVPage() {
                   <SelectTrigger id="language">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-card border border-border shadow-lg rounded-xl">
                     <SelectItem value="hu">Magyar</SelectItem>
                     <SelectItem value="en">Angol</SelectItem>
                   </SelectContent>
@@ -162,11 +157,11 @@ export default function NewCVPage() {
                   placeholder={
                     "Illeszd be az önéletrajzod szövegét ide...\n\nNév: ...\nVégzettség: ...\nTapasztalat: ...\nKészségek: ..."
                   }
-                  value={formData.textContent}
+                  value={formData.text_content}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      textContent: e.target.value,
+                      text_content: e.target.value,
                     }))
                   }
                   disabled={loading}

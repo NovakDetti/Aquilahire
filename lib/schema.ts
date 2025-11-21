@@ -1,11 +1,13 @@
-import { pgTable, text, timestamp, boolean, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer, uuid } from "drizzle-orm/pg-core";
 
 export const users = pgTable("user_data", {
-  id: text("id").primaryKey(),        
+  id: uuid("id"),
   name: text("name"),
-  email: text("email").notNull(),
+  email: text("email").notNull().unique(),
   image: text("picture"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 export const userSettings = pgTable("user_settings", {
@@ -20,6 +22,7 @@ export const cvs = pgTable("cvs", {
   userId: text("user_id").references(() => users.id),
   title: text("title").notNull(),
   language: text("language").notNull(),
+  text_content: text("text_content"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

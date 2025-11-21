@@ -108,7 +108,7 @@ const Interview = () => {
 
     try {
       const response = await fetch(
-        `${N8N_BASE_URL}/webhook/interview-answer`,
+        `${N8N_BASE_URL}/interview-answer`,
         {
           method: "POST",
           headers: {

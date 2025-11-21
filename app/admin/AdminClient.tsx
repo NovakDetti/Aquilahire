@@ -166,15 +166,11 @@ export default function AdminClient({ user, settings }: Props) {
                 <SelectTrigger className="w-full md:w-64">
                   <SelectValue placeholder="Válassz csomagot" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Starter">Starter – kezdéshez</SelectItem>
-                  <SelectItem value="Pro">
-                    Pro – rendszeres gyakorláshoz
-                  </SelectItem>
-                  <SelectItem value="Premium">
-                    Premium – intenzív felkészülés
-                  </SelectItem>
-                </SelectContent>
+              <SelectContent className="bg-white border shadow-lg rounded-xl">
+                <SelectItem value="Starter">Starter – kezdéshez</SelectItem>
+                <SelectItem value="Pro">Pro – rendszeres gyakorláshoz</SelectItem>
+                <SelectItem value="Premium">Premium – intenzív felkészülés</SelectItem>
+              </SelectContent>
               </Select>
               <p className="mt-2 text-xs text-muted-foreground">
                 A csomagváltás jelenleg csak demo – később ide jöhet Stripe /

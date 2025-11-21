@@ -24,82 +24,123 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/app/hooks/use-toast";
 
-const cvList = [
-  { id: "1", name: "Junior Developer CV" },
-  { id: "2", name: "Senior Developer CV" },
-];
+type CvOption = {
+  id: string;
+  name: string;
+  language: string;
+};
 
-export default function NewInterviewClient() {
+type UserHeader = {
+  name: string | null;
+  email: string;
+  image: string | null;
+};
+
+type Props = {
+  cvList: CvOption[];
+  user: UserHeader;
+};
+
+export default function NewInterviewClient({ cvList, user }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(false);
 
+  const preselectedId = searchParams.get("cvId") || "";
+  const preselectedCv = cvList.find((cv) => cv.id === preselectedId);
+
   const [formData, setFormData] = useState({
-    cvId: searchParams.get("cvId") || "",
-    positionTitle: "",
-    language: "hu",
+    cvId: preselectedId,
+    positionTitle: preselectedCv?.name ?? "",
+    language: preselectedCv?.language ?? "hu",
+    interviewType: "mcq" as "mcq" | "oral" | "written", 
   });
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!formData.cvId || !formData.positionTitle.trim()) {
-      toast({
-        title: "Hiányzó adatok",
-        description: "Kérlek, töltsd ki az összes mezőt!",
-        variant: "destructive",
-      });
-      return;
+  if (!formData.cvId || !formData.positionTitle.trim()) {
+    toast({
+      title: "Hiányzó adatok",
+      description: "Kérlek, töltsd ki az összes mezőt!",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_N8N_BASE_URL;
+    if (!baseUrl) {
+      throw new Error("NEXT_PUBLIC_N8N_BASE_URL nincs beállítva");
     }
 
-    setLoading(true);
+    console.log("➡️ Interjú indítása, body:", {
+      cvId: formData.cvId,
+      positionTitle: formData.positionTitle,
+      language: formData.language,
+      interviewType: formData.interviewType,
+      userEmail: user.email,
+    });
 
-    try {
-      const baseUrl = process.env.NEXT_PUBLIC_N8N_BASE_URL;
-      if (!baseUrl) {
-        throw new Error("NEXT_PUBLIC_N8N_BASE_URL nincs beállítva");
-      }
+    const response = await fetch(`${baseUrl}/interview-start`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cvId: formData.cvId,
+        positionTitle: formData.positionTitle,
+        language: formData.language,
+        interviewType: formData.interviewType,
+        userEmail: user.email,
+      }),
+    });
 
-      const response = await fetch(`${baseUrl}/webhook/interview-start`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          cvId: formData.cvId,
-          positionTitle: formData.positionTitle,
-          language: formData.language,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Interjú indítása sikertelen");
-      }
-
-      const data = await response.json();
-
-      toast({
-        title: "Interjú elindítva! 🎯",
-        description: `${data.questions?.length || 8} kérdés lett generálva a pozícióra.`,
-      });
-
-      router.push(`/interview/${data.interviewId}`);
-    } catch (error) {
-      toast({
-        title: "Hiba történt",
-        description:
-          error instanceof Error ? error.message : "Próbáld újra később",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      const text = await response.text().catch(() => "");
+      console.error("❌ interview-start response error:", response.status, text);
+      throw new Error(
+        `Interjú indítása sikertelen (HTTP ${response.status})`
+      );
     }
-  };
+
+    const data = await response.json();
+    console.log("✅ interview-start válasz:", data);
+
+    // Itt rugalmasan próbáljuk kinyerni az ID-t
+    const interviewId =
+      data.interviewId ?? data.id ?? data.interview_id ?? data?.data?.interviewId;
+
+    if (!interviewId) {
+      throw new Error("A válasz nem tartalmaz interviewId-t");
+    }
+
+    toast({
+      title: "Interjú elindítva! 🎯",
+      description: `${data.questions?.length || 8} kérdés lett generálva a pozícióra.`,
+    });
+
+    router.push(`/interview/${interviewId}`);
+  } catch (error) {
+    console.error("🔥 handleSubmit hiba:", error);
+    toast({
+      title: "Hiba történt",
+      description:
+        error instanceof Error ? error.message : "Próbáld újra később",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
-    <DashboardLayout>
+    <DashboardLayout userOverride={user}>
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Új interjú indítása</h1>
@@ -133,7 +174,7 @@ export default function NewInterviewClient() {
                   <SelectTrigger id="cv">
                     <SelectValue placeholder="Válassz egy CV-t..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-card border border-border shadow-lg rounded-xl">
                     {cvList.map((cv) => (
                       <SelectItem key={cv.id} value={cv.id}>
                         {cv.name}
@@ -174,6 +215,33 @@ export default function NewInterviewClient() {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="type">Interjú típusa</Label>
+                <Select
+                  value={formData.interviewType}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      interviewType: value as "mcq" | "oral" | "written",
+                    }))
+                  }
+                  disabled={loading}
+                >
+                  <SelectTrigger id="type">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border border-border shadow-lg rounded-xl">
+                    <SelectItem value="mcq">Feleletválasztós kvíz</SelectItem>
+                    <SelectItem value="oral" disabled>
+                      Szóbeli (chat) – hamarosan
+                    </SelectItem>
+                    <SelectItem value="written" disabled>
+                      Írásbeli esettanulmány – hamarosan
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="language">Interjú nyelve *</Label>
                 <Select
                   value={formData.language}
@@ -185,7 +253,7 @@ export default function NewInterviewClient() {
                   <SelectTrigger id="language">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-card border border-border shadow-lg rounded-xl">
                     <SelectItem value="hu">Magyar</SelectItem>
                     <SelectItem value="en">Angol</SelectItem>
                   </SelectContent>
@@ -197,8 +265,8 @@ export default function NewInterviewClient() {
                   Mit várhat tőled az interjú?
                 </h4>
                 <ul className="space-y-1 text-sm text-foreground">
-                  <li>• 6-10 személyre szabott kérdés</li>
-                  <li>• Valós idejű visszajelzés minden válaszra</li>
+                  <li>• 6-10 feleletválasztós kérdés</li>
+                  <li>• Azonnali visszajelzés minden válaszra</li>
                   <li>• Részletes riport az interjú végén</li>
                   <li>• ~20-30 perc időtartam</li>
                 </ul>
