@@ -6,6 +6,5 @@ type PageProps = {
 
 export default async function InterviewPage({ params }: PageProps) {
   const { id } = await params;  
-
   return <McqInterviewClient interviewId={id} />;
 }

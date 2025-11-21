@@ -26,6 +26,7 @@ type McqQuestion = {
   id: string;
   text: string;
   options: McqOption[];
+  correctOptionId: string;
 };
 
 type McqSessionResponse = {
@@ -60,6 +61,11 @@ export default function McqInterviewClient({ interviewId }: Props) {
   const [feedback, setFeedback] = useState<AnswerFeedback | null>(null);
   const [finished, setFinished] = useState(false);
 
+  const [results, setResults] = useState<
+  { questionId: string; selectedOptionId: string; correct: boolean }[]>([]);
+  const [correctCount, setCorrectCount] = useState(0);
+
+
   const baseUrl = process.env.NEXT_PUBLIC_N8N_BASE_URL;
 
   useEffect(() => {
@@ -82,8 +88,27 @@ export default function McqInterviewClient({ interviewId }: Props) {
           throw new Error("Nem sikerült betölteni az interjút.");
         }
 
-        const data: McqSessionResponse = await res.json();
-        setSession(data);
+        const raw = await res.json();
+        if (Array.isArray(raw)) {
+        const questions = raw.map((q: any) => ({
+            id: q.id,
+            text: q.question_text,
+            options: q.options_json.options,
+            correctOptionId: q.correct_option_id,
+        }));
+
+        setSession({
+            interviewId: raw[0]?.interview_id ?? interviewId,
+            positionTitle: "Interjú",
+            cvName: "",
+            language: "hu",
+            questions,
+        });
+
+        } else {
+        setSession(raw);
+        }
+
       } catch (err) {
         console.error(err);
         toast({
@@ -102,82 +127,101 @@ export default function McqInterviewClient({ interviewId }: Props) {
     loadSession();
   }, [interviewId, baseUrl, toast]);
 
-  const currentQuestion =
-    session?.questions && session.questions[currentIndex];
+    const submitAnswer = async () => {
+        if (!session || !currentQuestion || !selectedOptionId) return;
 
-  const totalQuestions = session?.questions.length ?? 0;
-  const isLastQuestion = currentIndex === totalQuestions - 1;
+        setSubmitting(true);
+        setFeedback(null);
 
-  const submitAnswer = async () => {
-    if (!session || !currentQuestion || !selectedOptionId) return;
+        console.log(session)
 
-    setSubmitting(true);
-    setFeedback(null);
+        try {
+            const isCorrect = selectedOptionId === currentQuestion.correctOptionId;
 
-    try {
-      if (!baseUrl) {
-        throw new Error("NEXT_PUBLIC_N8N_BASE_URL nincs beállítva");
-      }
+            setFeedback({ correct: isCorrect });
+            setResults((prev) => [
+            ...prev,
+            {
+                questionId: currentQuestion.id,
+                selectedOptionId,
+                correct: isCorrect,
+            },
+            ]);
 
-      const res = await fetch(`${baseUrl}/webhook/interview-mcq-answer`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          interviewId: session.interviewId,
-          questionId: currentQuestion.id,
-          selectedOptionId,
-        }),
-      });
+            if (isCorrect) {
+            setCorrectCount((prev) => prev + 1);
+            }
 
-      if (!res.ok) {
-        throw new Error("Nem sikerült értékelni a választ.");
-      }
+            if (isLastQuestion) {
+            setFinished(true);
+            await sendFinalResults();
+            }
+        } catch (err) {
+            console.error(err);
+            toast({
+            title: "Hiba történt",
+            description:
+                err instanceof Error
+                ? err.message
+                : "Valami elromlott a válasz feldolgozásakor.",
+            variant: "destructive",
+            });
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
-      const data: AnswerFeedback = await res.json();
-      setFeedback(data);
+    const sendFinalResults = async () => {
+        if (!baseUrl || !session) return;
 
-      if (isLastQuestion) {
-        setFinished(true);
-      }
-    } catch (err) {
-      console.error(err);
-      toast({
-        title: "Hiba történt",
-        description:
-          err instanceof Error
-            ? err.message
-            : "Nem sikerült értékelni a választ.",
-        variant: "destructive",
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+        try {
+            await fetch(`${baseUrl}/interview-mcq-finish`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                interviewId: session.interviewId,
+                totalQuestions,
+                correctCount,
+                answers: results,
+            }),
+            });
+        } catch (error) {
+            console.error("Final results POST error", error);
+            
+        }
+    };
 
-  const goToNextQuestion = () => {
+
+
+    const goToNextQuestion = () => {
     setFeedback(null);
     setSelectedOptionId(null);
+
     if (!isLastQuestion) {
-      setCurrentIndex((prev) => prev + 1);
+        setCurrentIndex((prev) => prev + 1);
     } else {
-      setFinished(true);
+        setFinished(true);
+        void sendFinalResults(); 
     }
-  };
+    };
 
-  if (loading || !session) {
+    if (loading || !session) {
     return (
-      <DashboardLayout>
+        <DashboardLayout>
         <div className="flex h-[60vh] flex-col items-center justify-center gap-3 text-muted-foreground">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <p>Interjú betöltése...</p>
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <p>Interjú betöltése...</p>
         </div>
-      </DashboardLayout>
+        </DashboardLayout>
     );
-  }
+    }
 
+  const currentQuestion = session.questions[currentIndex];
   const current = currentQuestion;
+  const totalQuestions = session.questions.length;
+  const isLastQuestion = currentIndex === totalQuestions - 1;
 
   return (
     <DashboardLayout>

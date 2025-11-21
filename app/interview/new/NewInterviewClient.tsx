@@ -111,20 +111,40 @@ export default function NewInterviewClient({ cvList, user }: Props) {
     const data = await response.json();
     console.log("✅ interview-start válasz:", data);
 
-    // Itt rugalmasan próbáljuk kinyerni az ID-t
-    const interviewId =
-      data.interviewId ?? data.id ?? data.interview_id ?? data?.data?.interviewId;
+  
+    let interviewId: string | undefined;
+    let questionCount: number | undefined;
+
+    if (Array.isArray(data)) {
+      if (data.length > 0) {
+        interviewId = data[0]?.interview_id;
+        questionCount = data.length;
+      }
+    } else if (data && typeof data === "object") {
+      if (typeof data.interview_id === "string") {
+        interviewId = data.interview_id;
+      } else if (typeof data.interviewId === "string") {
+        interviewId = data.interviewId;
+      }
+
+      if (Array.isArray((data as any).questions)) {
+        questionCount = (data as any).questions.length;
+      }
+    }
 
     if (!interviewId) {
-      throw new Error("A válasz nem tartalmaz interviewId-t");
+      console.error("❌ Válasz tartalma:", data);
+      throw new Error("A válasz nem tartalmaz interview_id / interviewId mezőt");
     }
 
     toast({
       title: "Interjú elindítva! 🎯",
-      description: `${data.questions?.length || 8} kérdés lett generálva a pozícióra.`,
+      description: `${
+        questionCount ?? 8
+      } kérdés lett generálva a pozícióra.`,
     });
 
-    router.push(`/interview/${interviewId}`);
+    router.push(`/interview/${encodeURIComponent(interviewId)}`);
   } catch (error) {
     console.error("🔥 handleSubmit hiba:", error);
     toast({
@@ -137,6 +157,7 @@ export default function NewInterviewClient({ cvList, user }: Props) {
     setLoading(false);
   }
 };
+
 
 
   return (
