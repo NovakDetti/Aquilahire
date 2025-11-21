@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer, uuid, json, serial } from "drizzle-orm/pg-core";
 
 export const users = pgTable("user_data", {
   id: uuid("id"),
@@ -33,6 +33,29 @@ export const interviews = pgTable("interview_panel", {
   role: text("role").notNull(),
   status: text("status").notNull(),
   score: integer("score"),
+  correctCount: integer("correct_count"),
+  totalQuestions: integer("total_questions"),
   scheduledAt: timestamp("scheduled_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const interviewQuestions = pgTable("interview_questions", {
+  id: serial("id").primaryKey(),    
+  interviewId: uuid("interview_id").notNull(),
+  questionOrder: integer("question_order").notNull(),
+  questionText: text("question_text").notNull(),
+  optionsJson: json("options_json").notNull(),
+  correctOptionId: text("correct_option_id").notNull(),
+});
+
+export const interviewAnswers = pgTable("interview_answers", {
+  id: serial("id").primaryKey(),
+  interviewId: uuid("interview_id").notNull(),
+  questionId: integer("question_id")
+    .notNull()
+    .references(() => interviewQuestions.id, { onDelete: "cascade" }),
+  selectedOptionId: text("selected_option_id").notNull(),
+  isCorrect: boolean("is_correct").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+

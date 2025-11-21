@@ -38,6 +38,8 @@ type RecentInterview = {
   date: Date;
   score: number | null;
   status: UiStatus;
+  correctCount: number | null;
+  totalQuestions: number | null;
 };
 
 const mapStatusToUi = (status: string | null): UiStatus => {
@@ -131,6 +133,8 @@ export default async function DashboardPage() {
     date: int.scheduledAt ?? int.createdAt,
     score: int.score,
     status: mapStatusToUi(int.status),
+    correctCount: int.correctCount ?? null,
+    totalQuestions: int.totalQuestions ?? null,
   }));
 
   return (
@@ -269,7 +273,7 @@ export default async function DashboardPage() {
                         </div>
                         <div
                           className={`text-2xl font-bold ${getScoreColor(
-                            interview.score
+                            interview.correctCount
                           )}`}
                         >
                           {interview.score != null ? interview.score : "—"}
